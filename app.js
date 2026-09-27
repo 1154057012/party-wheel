@@ -166,7 +166,7 @@
     if(textAnimation)textAnimation.cancel();
     if(exitAnimation)exitAnimation.cancel();
     outgoingQuestion.textContent='';
-    number.textContent='000';typeBadge.textContent=`${categoryNames[category]} · ${levelNames[level]}`;hint.textContent=`${items().length} 道题，等你来揭晓`;
+    number.textContent='000';typeBadge.textContent=`${categoryNames[category]} · ${levelNames[level]}`;hint.textContent='';
     document.querySelector('#wheel-count').textContent=items().length;
     question.textContent={spicy:'放开一点，今晚玩点大胆的。',mild:'刚刚好的心跳，刚刚好的热闹。',beginner:'从小小的快乐开始，轻松玩。'}[level];
     card.classList.remove('landed');
