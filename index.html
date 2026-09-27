@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11120f">
+  <meta name="description" content="黑金聚会大转盘，混合版、真心话、大冒险，自选刺激版、温和版、纯菜版，每盘100道题。">
+  <title>微醺俱乐部 · 聚会大转盘</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2311120f'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%23d8bd80' stroke-width='2'/%3E%3Cpath d='M32 10L38 26H26Z' fill='%23d8bd80'/%3E%3Ccircle cx='32' cy='35' r='8' fill='%23d8bd80'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./questions.js" defer></script>
+  <script src="./question-store.js" defer></script>
+  <script src="./wheel-core.js" defer></script>
+  <script src="./app.js" defer></script>
+  <script src="./editor.js" defer></script>
+</head>
+<body>
+  <main>
+    <section class="intro" aria-label="选择转盘玩法">
+      <button class="eyebrow" id="editor-entry" type="button"><span></span> A LITTLE CHANCE. A GREAT NIGHT. <span></span></button>
+      <div class="category-tabs" role="group" aria-label="选择转盘类别">
+        <button class="category active" data-category="mixed" aria-pressed="true"><span aria-hidden="true">✳</span> 混合版 <small>ALL IN</small></button>
+        <button class="category" data-category="truth" aria-pressed="false"><span aria-hidden="true">♡</span> 真心话 <small>TRUTH</small></button>
+        <button class="category" data-category="dare" aria-pressed="false"><span aria-hidden="true">ϟ</span> 大冒险 <small>DARE</small></button>
+      </div>
+      <div class="level-tabs" role="group" aria-label="选择刺激程度">
+        <button class="level" data-level="spicy" aria-pressed="false"><span aria-hidden="true">✷</span> 刺激版</button>
+        <button class="level active" data-level="mild" aria-pressed="true"><span aria-hidden="true">◒</span> 温和版</button>
+        <button class="level" data-level="beginner" aria-pressed="false"><span aria-hidden="true">♧</span> 纯菜版</button>
+      </div>
+    </section>
+    <section class="game" aria-label="聚会大转盘">
+      <div class="result-card" id="result-card">
+        <div class="result-number"><span>今晚的签</span><strong id="question-number">000</strong></div>
+        <div class="result-body"><div class="result-meta"><span class="type-badge" id="question-type">命运待揭晓</span><span id="result-hint">准备好，把选择交给运气</span></div><div class="question-window"><h2 id="question-text">下一刻，会发生什么？</h2></div></div>
+        <span class="result-spark" aria-hidden="true">✧</span>
+      </div>
+      <div class="wheel-area">
+        <aside class="side-note left-note" aria-label="每盘题数"><span class="side-rule"></span><strong id="wheel-count">100</strong><span>道题，满盘惊喜</span><small>ONE SPIN. ONE STORY.</small></aside>
+        <div class="wheel-wrap" id="wheel-wrap">
+          <div class="wheel-pointer" id="pointer" aria-hidden="true"><span></span></div>
+          <canvas id="wheel" width="1200" height="1200" role="img" aria-label="包含100道题的混合版·温和版转盘；点击中心按钮抽选，再点一次快速停止，上方会显示完整题目"></canvas>
+          <div class="hub-surround" aria-hidden="true"></div>
+          <button class="spin-button" id="spin-button" data-state="idle" aria-label="转一下"><span class="hub-star" aria-hidden="true">✦</span><strong id="spin-label">转一下</strong><small id="spin-subtitle">LET'S PLAY</small><span class="hub-arrow" aria-hidden="true">↗</span></button>
+        </div>
+        <aside class="side-note right-note"><span class="side-rule"></span><span class="round-label">ROUND</span><strong id="round-number">01</strong><span id="round-caption">好戏，才刚开始</span></aside>
+      </div>
+      <p class="sr-only" id="announcement" aria-live="polite" aria-atomic="true"></p>
+    </section>
+  </main>
+  <footer><span>微醺有度，快乐不限量。</span><span>和朋友在一起，就是最好的玩法 <span class="footer-star">✦</span></span></footer>
+  <dialog class="small-dialog" id="password-dialog" aria-labelledby="password-title">
+    <form id="password-form">
+      <div class="dialog-heading"><h2 id="password-title">题库管理</h2><button type="button" class="icon-close" id="password-close" aria-label="关闭密码窗口">×</button></div>
+      <p class="dialog-copy">输入管理密码，打开你的题库。</p>
+      <label class="field-label" for="editor-password">管理密码</label>
+      <input id="editor-password" type="password" inputmode="numeric" autocomplete="off" maxlength="6" autofocus>
+      <p class="form-message" id="password-error" role="alert"></p>
+      <button class="editor-primary full-width" type="submit">进入题库</button>
+    </form>
+  </dialog>
+  <dialog class="editor-dialog" id="editor-dialog" aria-labelledby="editor-title">
+    <div class="editor-shell">
+      <header class="editor-heading"><div><p class="editor-overline">YOUR OWN RULES</p><h2 id="editor-title">我的题库</h2></div><button class="icon-close" id="editor-close" aria-label="关闭题库管理">×</button></header>
+      <div class="editor-controls">
+        <label>题目类别<select id="editor-category"><option value="truth">真心话</option><option value="dare">大冒险</option></select></label>
+        <label>刺激程度<select id="editor-level"><option value="spicy">刺激版</option><option value="mild">温和版</option><option value="beginner">纯菜版</option></select></label>
+        <label class="editor-search">搜索题目<input id="editor-search" type="search" placeholder="输入题号或关键词"></label>
+      </div>
+      <div class="editor-info"><p>混合版自动跟随更新。短标题最多 7 字，完整题目最多 40 字。保存仅对当前浏览器生效。</p><p id="storage-warning" role="status" hidden></p></div>
+      <div class="list-heading"><span id="editor-count"></span><button class="editor-secondary" id="add-question">＋ 新增题目</button></div>
+      <div class="question-list" id="question-list" aria-label="可编辑题目列表"></div>
+      <div class="editor-footer"><div class="backup-actions"><button class="editor-quiet" id="export-backup">导出备份</button><button class="editor-quiet" id="import-backup">导入备份</button><input id="backup-file" type="file" accept=".json,application/json" hidden></div><div class="save-actions"><span id="editor-save-state" role="status">尚未修改</span><button class="editor-primary" id="save-questions">保存并应用</button></div><p class="form-message editor-message" id="editor-message" role="alert"></p></div>
+    </div>
+  </dialog>
+  <dialog class="small-dialog" id="confirm-dialog" aria-labelledby="confirm-title">
+    <h2 id="confirm-title">放弃未保存的修改？</h2><p class="dialog-copy" id="confirm-copy">这些修改还没有保存。</p>
+    <div class="confirm-actions"><button class="editor-secondary" id="confirm-cancel">取消</button><button class="editor-primary" id="confirm-ok">确认</button></div>
+  </dialog>
+</body>
+</html>

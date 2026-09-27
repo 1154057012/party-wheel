@@ -1,0 +1,10 @@
+artifacts/
+docs/plans/
+tests/browser-check.cjs
+tests/editor-browser-check.cjs
+node_modules/
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
