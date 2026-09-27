@@ -47,8 +47,11 @@
       c.save();c.rotate(-Math.PI/2+i*step);
       c.fillStyle=i%5===1?'#ecd8a2':'#c4b784';
       c.textBaseline='middle'; c.textAlign='right';
-      c.font='500 17px "Microsoft YaHei", sans-serif';
-      c.fillText(item.label,505,0);
+      c.font=`500 ${Math.min(17, TAU*360/items().length*.72)}px "Microsoft YaHei", sans-serif`;
+      const characters=[...item.text.replace(/\s+/g,' ')];
+      let preview=characters.join('');
+      while(c.measureText(preview).width>210&&characters.length>1){characters.pop();preview=characters.join('')+'…';}
+      c.fillText(preview,505,0);
       c.fillStyle='#ab9960';c.font='11px Georgia, serif';c.fillText(String(i+1).padStart(3,'0'),540,0);
       c.restore();
     });

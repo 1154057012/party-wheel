@@ -40,30 +40,26 @@
     let visible=0;
     pool().forEach((item,index)=>{
       const number=String(index+1).padStart(3,'0');
-      if(query&&!`${number} ${index+1} ${item.label} ${item.text}`.toLowerCase().includes(query))return;
+      if(query&&!`${number} ${index+1} ${item.text}`.toLowerCase().includes(query))return;
       visible++;
       const row=document.createElement('div');row.className='question-row';row.dataset.index=index;
       const badge=document.createElement('span');badge.className='edit-number';badge.textContent=number;
-      const labelWrap=document.createElement('label');labelWrap.className='short-label';labelWrap.textContent='转盘短标题';
-      const labelInput=document.createElement('input');labelInput.value=item.label;labelInput.dataset.field='label';labelInput.maxLength=14;
-      labelInput.setAttribute('aria-label',`第 ${index+1} 题短标题，最多 7 字`);labelInput.placeholder='最多 7 字';
-      labelWrap.append(labelInput);
       const textWrap=document.createElement('label');textWrap.className='full-question';textWrap.textContent='完整题目';
       const textInput=document.createElement('textarea');textInput.rows=2;textInput.value=item.text;textInput.dataset.field='text';textInput.maxLength=80;
       textInput.setAttribute('aria-label',`第 ${index+1} 题完整内容，最多 40 字`);textInput.placeholder='最多 40 字';
       textWrap.append(textInput);
       const remove=document.createElement('button');remove.type='button';remove.className='delete-question';remove.dataset.action='delete';remove.textContent='删除';remove.setAttribute('aria-label',`删除第 ${index+1} 题`);
-      row.append(badge,labelWrap,textWrap,remove);list.append(row);
+      row.append(badge,textWrap,remove);list.append(row);
     });
     if(!visible){const empty=document.createElement('p');empty.className='editor-empty';empty.textContent=pool().length?'没有匹配的题目，换个关键词试试。':'这里还没有题目，点击「新增题目」开始。';list.append(empty);}
     updateCount(visible);
-    if(focusIndex!==undefined){const input=list.querySelector(`[data-index="${focusIndex}"] input`);if(input){input.focus();input.scrollIntoView({block:'nearest'});}}
+    if(focusIndex!==undefined){const input=list.querySelector(`[data-index="${focusIndex}"] textarea`);if(input){input.focus();input.scrollIntoView({block:'nearest'});}}
   }
   list.addEventListener('input',event=>{
     const field=event.target.dataset.field,row=event.target.closest('.question-row');
-    if(!row||!['label','text'].includes(field))return;
+    if(!row||field!=='text')return;
     pool()[Number(row.dataset.index)][field]=event.target.value;
-    const max=field==='label'?7:40,count=[...event.target.value.trim()].length;
+    const max=40,count=[...event.target.value.trim()].length;
     event.target.setAttribute('aria-invalid',String(count===0||count>max));
     setDirty(true);
   });
@@ -79,7 +75,7 @@
   search.addEventListener('input',()=>renderList());
   $('add-question').addEventListener('click',()=>{
     if(pool().length>=200)return;
-    pool().push({label:'',text:'',type:category.value});search.value='';setDirty(true);renderList(pool().length-1);
+    pool().push({text:'',type:category.value});search.value='';setDirty(true);renderList(pool().length-1);
   });
   function openEditor(){
     draft=store.getDraft();dirty=false;

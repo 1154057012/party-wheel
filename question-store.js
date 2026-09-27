@@ -43,11 +43,10 @@
         clean[category][tier] = Array.from(pool, (item, index) => {
           const position = `${title}第 ${index + 1} 题`;
           if (!isRecord(item)) throw new Error(`${position}格式不正确。`);
-          const label = normalizedString(item.label, 7, `${position}短标题`);
           const text = normalizedString(item.text, 40, `${position}完整内容`);
           if (seen.has(text)) throw new Error(`${position}与本组其他题目的内容重复。`);
           seen.add(text);
-          return { label, text, type: category };
+          return { text, type: category };
         });
       }
     }

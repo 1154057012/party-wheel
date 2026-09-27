@@ -12,7 +12,7 @@ test('all nine wheels provide 100 unique, readable prompts', () => {
       assert.equal(items.length, 100, `${category}/${tier}`);
       assert.equal(new Set(items.map(item => item.text)).size, 100);
       for (const item of items) {
-        assert.ok(item.label.length > 0 && [...item.label].length <= 7, item.label);
+        assert.equal('label' in item, false);
         assert.ok(item.text.length > 0 && [...item.text].length <= 40, item.text);
         assert.ok(['truth', 'dare'].includes(item.type), item.type);
         if (category !== 'mixed') assert.equal(item.type, category);

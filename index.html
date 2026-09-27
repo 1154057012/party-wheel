@@ -67,7 +67,7 @@
         <label>刺激程度<select id="editor-level"><option value="spicy">刺激版</option><option value="mild">温和版</option><option value="beginner">纯菜版</option></select></label>
         <label class="editor-search">搜索题目<input id="editor-search" type="search" placeholder="输入题号或关键词"></label>
       </div>
-      <div class="editor-info"><p>混合版自动跟随更新。短标题最多 7 字，完整题目最多 40 字。保存仅对当前浏览器生效。</p><p id="storage-warning" role="status" hidden></p></div>
+      <div class="editor-info"><p>混合版自动跟随更新。每道题最多 40 字。保存仅对当前浏览器生效。</p><p id="storage-warning" role="status" hidden></p></div>
       <div class="list-heading"><span id="editor-count"></span><button class="editor-secondary" id="add-question">＋ 新增题目</button></div>
       <div class="question-list" id="question-list" aria-label="可编辑题目列表"></div>
       <div class="editor-footer"><div class="backup-actions"><button class="editor-quiet" id="export-backup">导出备份</button><button class="editor-quiet" id="import-backup">导入备份</button><input id="backup-file" type="file" accept=".json,application/json" hidden></div><div class="save-actions"><span id="editor-save-state" role="status">尚未修改</span><button class="editor-primary" id="save-questions">保存并应用</button></div><p class="form-message editor-message" id="editor-message" role="alert"></p></div>

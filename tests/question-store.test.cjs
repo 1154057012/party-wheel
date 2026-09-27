@@ -38,12 +38,12 @@ test('save persists changes, reload restores them, and mixed prompts follow sour
 test('draft mutations cannot change defaults or saved live state', () => {
   const store = createStore(defaults, memoryStorage());
   const draft = store.getDraft();
-  draft.dare.spicy[1].label = '新标题';
-  assert.notEqual(store.getBank().dare.spicy[1].label, '新标题');
+  draft.dare.spicy[1].text = '新题目';
+  assert.notEqual(store.getBank().dare.spicy[1].text, '新题目');
   store.save(draft);
-  draft.dare.spicy[1].label = '再次更改';
-  assert.equal(store.getBank().dare.spicy[1].label, '新标题');
-  assert.notEqual(defaults.dare.spicy[1].label, '新标题');
+  draft.dare.spicy[1].text = '再次更改';
+  assert.equal(store.getBank().dare.spicy[1].text, '新题目');
+  assert.notEqual(defaults.dare.spicy[1].text, '新题目');
 });
 
 test('corrupt, incompatible and unavailable storage recover defaults with Chinese warnings', () => {
@@ -71,7 +71,7 @@ test('normalization trims strings, derives type and drops arbitrary prompt prope
   const draft = sources();
   draft.truth.mild[0] = { label: '  新题目  ', text: '  新内容  ', type: 'dare', extra: '<script>' };
   const clean = validateSources(draft);
-  assert.deepEqual(clean.truth.mild[0], { label: '新题目', text: '新内容', type: 'truth' });
+  assert.deepEqual(clean.truth.mild[0], { text: '新内容', type: 'truth' });
   assert.equal(draft.truth.mild[0].label, '  新题目  ');
 });
 
@@ -81,8 +81,7 @@ test('validation rejects missing pools, extra categories, blank and duplicate pr
     draft => { draft.mixed = {}; },
     draft => { draft.truth.mild = []; },
     draft => { draft.truth.mild = Array.from({ length: 201 }, (_, i) => ({ label: '题目', text: String(i) })); },
-    draft => { draft.truth.mild[0].label = '        '; },
-    draft => { draft.truth.mild[0].label = '一二三四五六七八'; },
+    draft => { draft.truth.mild[0].text = '        '; },
     draft => { draft.truth.mild[0].text = '题'.repeat(41); },
     draft => { draft.truth.mild[0].text = 123; },
     draft => { draft.truth.mild[1].text = ' ' + draft.truth.mild[0].text + ' '; },
@@ -127,4 +126,15 @@ test('backups round trip only through the versioned validated envelope', () => {
   draft.dare.beginner = [];
   assert.throws(() => parseBackup(JSON.stringify({ version: 1, sources: draft })), /[\u4e00-\u9fff]/);
   assert.throws(() => store.exportBackup(draft), /[\u4e00-\u9fff]/);
+});
+
+ test('legacy saved labels and backups migrate without losing edited question text', () => {
+  const old = sources();
+  old.truth.mild[0] = {label: '以前的标题', text: '我之前保存的自定义内容。', type: 'truth'};
+  const serialized=JSON.stringify({version:1,sources:old});
+  const store=createStore(defaults,memoryStorage(serialized));
+  assert.equal(store.getWarning(),'');
+  assert.deepEqual(store.getBank().truth.mild[0],{text:'我之前保存的自定义内容。',type:'truth'});
+  assert.equal(parseBackup(serialized).truth.mild[0].text,'我之前保存的自定义内容。');
+  assert.equal('label' in JSON.parse(store.exportBackup(store.getDraft())).sources.truth.mild[0],false);
 });
