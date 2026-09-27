@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11120f">
-  <meta name="app-version" content="20260928-02">
+  <meta name="app-version" content="20260928-03">
   <meta name="description" content="黑金聚会大转盘，混合版、真心话、大冒险，自选刺激版、温和版、纯菜版，每盘100道题。">
-  <title>微醺俱乐部 · 聚会大转盘</title>
+  <title>聚会大转盘</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2311120f'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%23d8bd80' stroke-width='2'/%3E%3Cpath d='M32 10L38 26H26Z' fill='%23d8bd80'/%3E%3Ccircle cx='32' cy='35' r='8' fill='%23d8bd80'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=20260928-02">
-  <script src="./questions.js?v=20260928-02" defer></script>
-  <script src="./question-store.js?v=20260928-02" defer></script>
-  <script src="./wheel-core.js?v=20260928-02" defer></script>
-  <script src="./app.js?v=20260928-02" defer></script>
-  <script src="./editor.js?v=20260928-02" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=20260928-03">
+  <script src="./questions.js?v=20260928-03" defer></script>
+  <script src="./question-store.js?v=20260928-03" defer></script>
+  <script src="./wheel-core.js?v=20260928-03" defer></script>
+  <script src="./app.js?v=20260928-03" defer></script>
+  <script src="./editor.js?v=20260928-03" defer></script>
 </head>
 <body>
   <main>
@@ -33,16 +33,16 @@
     <section class="game" aria-label="聚会大转盘">
       <div class="result-card" id="result-card">
         <div class="result-number"><span>今晚的签</span><strong id="question-number">000</strong></div>
-        <div class="result-body"><div class="result-meta"><span class="type-badge" id="question-type">命运待揭晓</span><span id="result-hint">准备好，把选择交给运气</span></div><div class="question-window"><h2 id="question-text">下一刻，会发生什么？</h2></div></div>
+        <div class="result-body"><div class="result-meta"><span class="type-badge" id="question-type">命运待揭晓</span><span id="result-hint">准备好，把选择交给运气</span></div><div class="question-window"><h2 id="question-text">下一刻，会发生什么？</h2><h2 id="question-exit" aria-hidden="true"></h2></div></div>
         <span class="result-spark" aria-hidden="true">✧</span>
       </div>
       <div class="wheel-area">
         <aside class="side-note left-note" aria-label="每盘题数"><span class="side-rule"></span><strong id="wheel-count">100</strong><span>道题，满盘惊喜</span><small>ONE SPIN. ONE STORY.</small></aside>
         <div class="wheel-wrap" id="wheel-wrap">
           <div class="wheel-pointer" id="pointer" aria-hidden="true"><span></span></div>
-          <canvas id="wheel" width="1200" height="1200" role="img" aria-label="包含100道题的混合版·温和版转盘；点击中心按钮抽选，再点一次快速停止，上方会显示完整题目"></canvas>
+          <canvas id="wheel" width="1200" height="1200" role="img" aria-label="包含100道题的混合版·温和版转盘；点击中心按钮抽选，再点一次停止，上方会显示完整题目"></canvas>
           <div class="hub-surround" aria-hidden="true"></div>
-          <button class="spin-button" id="spin-button" data-state="idle" aria-label="转一下"><span class="hub-star" aria-hidden="true">✦</span><strong id="spin-label">转一下</strong><small id="spin-subtitle">LET'S PLAY</small><span class="hub-arrow" aria-hidden="true">↗</span></button>
+          <button class="spin-button" id="spin-button" data-state="idle" aria-label="转一下"><span class="hub-star" aria-hidden="true">✦</span><strong id="spin-label">转一下</strong><small id="spin-subtitle">LET'S PLAY</small></button>
         </div>
         <aside class="side-note right-note"><span class="side-rule"></span><span class="round-label">ROUND</span><strong id="round-number">01</strong><span id="round-caption">好戏，才刚开始</span></aside>
       </div>

@@ -11,6 +11,7 @@
   const tabs = [...document.querySelectorAll('.category')];
   const levels = [...document.querySelectorAll('.level')];
   const question = document.querySelector('#question-text');
+  const outgoingQuestion = document.querySelector('#question-exit');
   const number = document.querySelector('#question-number');
   const typeBadge = document.querySelector('#question-type');
   const hint = document.querySelector('#result-hint');
@@ -21,7 +22,7 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const SIZE = 1200, CENTER = 600;
   let category = 'mixed', level = 'mild', rotation = 0, spinning = false, selected = -1;
-  let round = 1, completed = 0, textAnimation, motion = null;
+  let round = 1, completed = 0, textAnimation, exitAnimation, motion = null;
   let plate = document.createElement('canvas');
   plate.width = SIZE; plate.height = SIZE;
   const plateCtx = plate.getContext('2d');
@@ -78,14 +79,19 @@
   }
 
   function showQuestion(index, animate = true) {
-    selected=index;
     const item=items()[index];
+    if(index===selected&&question.textContent===item.text)return;
+    selected=index;
+    const previousText=question.textContent;
     number.textContent=String(index+1).padStart(3,'0');
     typeBadge.textContent=`${typeNames[item.type]} · ${levelNames[level]}`;
     question.textContent=item.text;
     if(textAnimation)textAnimation.cancel();
+    if(exitAnimation)exitAnimation.cancel();
     if(animate&&!reducedMotion.matches){
-      textAnimation=question.animate([{transform:'translateY(15px)',opacity:.65},{transform:'translateY(0)',opacity:1}],{duration:110,easing:'ease-out'});
+      outgoingQuestion.textContent=previousText;
+      exitAnimation=outgoingQuestion.animate([{transform:'translateY(0)',opacity:.22},{transform:'translateY(-14px)',opacity:0}],{duration:100,easing:'ease-out'});
+      textAnimation=question.animate([{opacity:.7},{opacity:1}],{duration:100,easing:'ease-out'});
     }
   }
 
@@ -94,7 +100,7 @@
     spinButton.dataset.state=state;
     spinButton.setAttribute('aria-disabled',String(state==='stopping'));
     [...tabs,...levels].forEach(button=>button.disabled=spinning);
-    const label={idle:'转一下',spinning:'快速停止',stopping:'即将揭晓'}[state];
+    const label={idle:'转一下',spinning:'停止',stopping:'即将揭晓'}[state];
     document.querySelector('#spin-label').textContent=label;
     spinButton.setAttribute('aria-label',label);
     document.querySelector('#spin-subtitle').textContent={idle:"LET'S PLAY",spinning:'TAP TO STOP',stopping:'HERE WE GO'}[state];
@@ -158,11 +164,13 @@
       button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
     });
     if(textAnimation)textAnimation.cancel();
+    if(exitAnimation)exitAnimation.cancel();
+    outgoingQuestion.textContent='';
     number.textContent='000';typeBadge.textContent=`${categoryNames[category]} · ${levelNames[level]}`;hint.textContent=`${items().length} 道题，等你来揭晓`;
     document.querySelector('#wheel-count').textContent=items().length;
     question.textContent={spicy:'放开一点，今晚玩点大胆的。',mild:'刚刚好的心跳，刚刚好的热闹。',beginner:'从小小的快乐开始，轻松玩。'}[level];
     card.classList.remove('landed');
-    canvas.setAttribute('aria-label',`包含${items().length}道题的${categoryNames[category]}·${levelNames[level]}转盘；点击中心按钮抽选，再点一次快速停止，上方会显示完整题目`);
+    canvas.setAttribute('aria-label',`包含${items().length}道题的${categoryNames[category]}·${levelNames[level]}转盘；点击中心按钮抽选，再点一次停止，上方会显示完整题目`);
     renderPlate();draw();
   }
   tabs.forEach(tab=>tab.addEventListener('click',()=>{
